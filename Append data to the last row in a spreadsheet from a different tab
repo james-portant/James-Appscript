@@ -1,0 +1,24 @@
+function submitData() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var formSS = ss.getSheetByName("Create Invoice"); //Form Sheet
+  var datasheet = ss.getSheetByName("Portant Invoice"); //Data Sheet
+
+  //Input Values
+  var endRow = 10;
+  var values = [];
+
+  for (let row = 2; row <= endRow; row++ ) { 
+    values.push([
+      formSS.getRange("A" + row).getValue(),
+      formSS.getRange("B" + row).getValue(),
+      formSS.getRange("C" + row).getValue(),
+      formSS.getRange("D" + row).getValue(),
+      formSS.getRange("E" + row).getValue(),
+      formSS.getRange("F" + row).getValue(),
+      formSS.getRange("G" + row).getValue(),
+      formSS.getRange("H" + row).getValue()
+    ]);
+  }
+
+  datasheet.getRange(datasheet.getLastRow() + 1, 1, values.length, values[0].length).setValues(values);
+}
