@@ -1,0 +1,58 @@
+function ListFldJpgs() {
+  var ui = SpreadsheetApp.getUi();
+  var result = ui.prompt("Please enter a name for the new sheet");
+  
+  //Ask the user to name their new sheet
+  var button = result.getSelectedButton();
+  
+  if (button === ui.Button.OK) {
+    Logger.log("The user clicked the [OK] button.");
+    var thesheet = result.getResponseText() 
+  } else if (button === ui.Button.CLOSE) {
+    Logger.log("The user clicked the [X] button and closed the prompt dialog."); 
+    return
+  }
+  
+  // Ask the user for the Folder ID
+  var ui = SpreadsheetApp.getUi();
+  var result = ui.prompt("Please enter your Google Drive folders ID (in url)");
+  
+
+  var button = result.getSelectedButton();
+  
+  if (button === ui.Button.OK) {
+    Logger.log("The user clicked the [OK] button.");
+    var myfolder = DriveApp.getFolderById(result.getResponseText()) 
+  } else if (button === ui.Button.CLOSE) {
+    Logger.log("The user clicked the [X] button and closed the prompt dialog."); 
+    return
+  }  
+
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var newJPGsheet = ss.getSheetByName(thesheet); 
+     if (!newJPGsheet) { 
+       ss.insertSheet(thesheet, 0); 
+       var newJPGsheet = ss.getSheetByName(thesheet) ;
+  Logger.log(SpreadsheetApp.getActiveSheet().getName());
+     }
+  // clear all existing content
+  newJPGsheet.clear();
+ // append the header row
+  newJPGsheet.appendRow([ "Name", "Link", "Type", "Download link"]);
+  var results = [];
+  // list all files in the folder
+  var myfiles = myfolder.getFiles();
+  // loop through found files in the folder
+  while (myfiles.hasNext()) { 
+    var myfile = myfiles.next(); 
+    var fname = myfile.getName();
+    var furl = myfile.getUrl();
+    var ftype = myfile.getMimeType();
+    var fdownload = "https://drive.google.com/uc?export=download&id=";
+    fdownload += myfile.getId();
+    results = [ fname, furl, ftype, fdownload ];
+    //Logger.log("results = "+results); // for de-bugging
+    newJPGsheet.appendRow(results); 
+       } 
+     
+}
